@@ -88,7 +88,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, portCHAR *pcTaskName)
 	PORTH |= _BV(PORTH3); // red
 
 	// Print console debugging info if we have overflow
-	avrSerialPrint_P(PSTR("\r\n\n\n ERROR: Overflow \r\n"));
+	avrSerialPrint_P(PSTR("\r\n ERROR: Overflow \r\n"));
 	while(1);
 }
 
