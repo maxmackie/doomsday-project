@@ -23,8 +23,8 @@ static QueueHandle_t ipc;
 // pixel temperatures
 struct structMsg
 {
-   unsigned long ambient;
-   unsigned long pixels[];
+	unsigned long ambient;
+	unsigned long pixels[];
 } msg;
 
 int main(void) __attribute__((OS_main));
@@ -45,10 +45,10 @@ int main(void)
 		avrSerialPrint_P(PSTR("\r\n ERROR: Could not create the IPC queue \r\n"));
 	}
 
-    // Create the LED task
-    xTaskCreate(taskLEDControl, "LED Task", 256, NULL, 3, NULL);
+	// Create the LED task
+	xTaskCreate(taskLEDControl, "LED Task", 256, NULL, 3, NULL);
 
-    // TODO: Modify the default scheduler with our own one
+	// TODO: Modify the default scheduler with our own one
 	vTaskStartScheduler();
 }
 
@@ -57,8 +57,8 @@ int main(void)
 static void taskLEDControl(void *pvParameters)
 {
 	// The usual stuff
-    (void) pvParameters;
-    TickType_t xLastWakeTime;
+	(void) pvParameters;
+	TickType_t xLastWakeTime;
 	xLastWakeTime = xTaskGetTickCount();
 
 	// Turn off the LED colours
