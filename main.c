@@ -72,8 +72,25 @@ static void taskLEDControl(void *pvParameters)
 		if (ipc != 0) {
 			// Attempt to peek at the first value in the queue
 			if (xQueuePeek(ipc, &(val), (TickType_t) 10)) {
-				// Received a value from the front of the queue
-
+				// calculate the average value
+				// ...
+				unsigned long avg = 0;
+				if (avg < 20) {
+					// turn on blue and turn off others
+					PORTE |= _BV(PORTE3);
+					PORTE &= ~_BV(PORTE5);
+					PORTH |= _BV(PORTH3);
+				} else if (avg < 30) {
+					// turn on green and turn off others
+					PORTE &= ~_BV(PORTE3);
+					PORTE |= _BV(PORTE5);
+					PORTH |= _BV(PORTH3);
+				} else {
+					// turn on red and turn off others
+					PORTE |= _BV(PORTE3);
+					PORTE |= _BV(PORTE5);
+					PORTH &= ~_BV(PORTH3);
+				}
 			}
 		}
 	}
