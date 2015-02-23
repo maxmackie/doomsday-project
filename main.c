@@ -8,11 +8,13 @@
 #include "queue.h"
 #include "semphr.h"
 #include "serial.h"
+#include "sensor.h"
 
 extern xComPortHandle xSerialPort;
 
 // Static declarations of the task functions
 static void taskLEDControl (void *pvParameters);
+static void taskThermalSensor (void *pvParameters);
 
 // The queue used for IPC between the sensor, LCD and LED tasks
 static QueueHandle_t ipc;
@@ -31,11 +33,12 @@ int main(void) __attribute__((OS_main));
 
 int main(void)
 {
-	// Display a polite welcome message - we are Canadians after all
-	avrSerialPrint_P(PSTR("\r\n Successfully running Doomsday Project \r\n"));
 
 	// Set up the serial port communications channel
-	xSerialPort = xSerialPortInitMinimal(USART0, 115200, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
+    xSerialPort = xSerialPortInitMinimal(USART0, 115200, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
+    
+    // Display a polite welcome message - we are Canadians after all
+    avrSerialPrint_P(PSTR("\r\n Successfully running Doomsday Project \r\n"));
 
 	// Create the queue from the sensor to the LED and the sensor to the LCD
 	struct structMsg tmp;
@@ -46,7 +49,9 @@ int main(void)
 	}
 
 	// Create the LED task
-	xTaskCreate(taskLEDControl, "LED Task", 256, NULL, 3, NULL);
+    xTaskCreate(taskLEDControl, "LED Task", 256, NULL, 3, NULL);
+    // Create the ThermalSensor task
+    xTaskCreate(taskThermalSensor, "Thermal Sensor Task", 256, NULL, 3, NULL);
 
 	// TODO: Modify the default scheduler with our own one
 	vTaskStartScheduler();
@@ -94,6 +99,15 @@ static void taskLEDControl(void *pvParameters)
 			}
 		}
 	}
+}
+
+static void taskThermalSensor(void *pvParameters)
+{
+    (void)pvParameters;
+    
+    uint8_t test = getAmbientTemperature();
+    avrSerialPrintf_P(PSTR("\r\nAmbient Temperature: %u \r\n "), test);
+
 }
 
 // Handles stack overflows by turning off the LEDs and logging an error
