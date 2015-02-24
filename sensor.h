@@ -6,10 +6,16 @@
 
 #include <I2CMultimaster.h>
 
+#ifndef INCLUDE_THERMALSENSOR_H_
+#define INCLUDE_THERMALSENSOR_H_
+
+// Definitions
+#define NUM_TEMPS 9
+
 #define TPA81_WRITE 0xD0
 #define TPA81_READ 0xD1
 
-#define MASTER 0xA0
+#define MASTER 0xC0
 
 #define AMBIENT 0x01
 #define PIXEL_1 0x02
@@ -21,6 +27,9 @@
 #define PIXEL_7 0x08
 #define PIXEL_8 0x09
 
+// Prototypes
+void initThermalSensor(void);
+void ts_get_temps(uint8_t *tempArray);
 
-uint8_t getAmbientTemperature(void);
-uint8_t getDataFromRegister (uint8_t);
+#endif /* INCLUDE_THERMALSENSOR_H_ */
+

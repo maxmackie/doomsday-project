@@ -7,13 +7,26 @@
 #include <I2CMultimaster.h>
 #include "sensor.h"
 
+uint8_t getDataFromRegister (uint8_t);
+
 /*-----------------------
-* Function: getAmbientTemperature
-* Return value: Will return a uint8_t
-* Description: Is simply a wrapper function for the "getDataFromRegister", it will simply give you the Ambient Temperature that the Thermal Sensor is picking up.
+* Function: initThermalSensor
+* Return value: none
+* Description: Will initialize the MASTER device on the I2C Bus, also enables interrupts to allows reads to occur
 *----------------------*/
-uint8_t getAmbientTemperature(void){
-	return getDataFromRegister(AMBIENT);
+void initThermalSensor(void){
+	I2C_Master_Initialise(MASTER); //Initialize the MASTER device which is the controller, used to also enable interrupts on READs
+}
+
+/*-----------------------
+* Function: ts_get_temps
+* Return value: none, but the tempArray is allocated with an array filled with the temperatures, array is of size 9
+* Description: Will get the temperature readings from the TPA81 and assign each element in the tempArray with the correct values
+*----------------------*/
+void ts_get_temps(uint8_t *tempArray){
+	for (int i = 0 ; i < NUM_TEMPS; i++){
+		tempArray[i] = getDataFromRegister(AMBIENT + i);
+	};
 }
 
 /*-----------------------
@@ -30,7 +43,8 @@ uint8_t getAmbientTemperature(void){
 * 7. Send a stop sequence.
 *
 *----------------------*/
-uint8_t getDataFromRegister (uint8_t bearingRegister){
+
+uint8_t getDataFromRegister(uint8_t bearingRegister){
 
 	uint8_t commandBuffer [2]; //Create a command buffer that will send a WRITE command addressing the appropriate REGISTER
 	commandBuffer[0] = TPA81_WRITE; // Set the first byte in the message to WRITE to the TPA81 on the I2C Bus
@@ -39,14 +53,13 @@ uint8_t getDataFromRegister (uint8_t bearingRegister){
 	uint8_t readBuffer [2]; //Create a second buffer used to read data from the registers on the device
 	readBuffer[0] = TPA81_READ; //Set the first byte in the message to signal a READ from the TPA81 on the i2c Bus
 
-	I2C_Master_Initialise(MASTER); //Initialize the MASTER device which is the controller, used to also enable interrupts on READs
 	I2C_Master_Start_Transceiver_With_Data( (uint8_t *)&commandBuffer, 2 );//Send the commandBuffer on the bus
 
 	if (I2C_Check_Free_After_Stop() == pdTRUE )// i think we dont need this, as it's for a multi-master deally
 		I2C_Master_Start_Transceiver_With_Data( (uint8_t *)&readBuffer, 2 ); //Send the readBuffer on the bus
 
 	if( I2C_Master_Get_Data_From_Transceiver( (uint8_t *)&readBuffer, 2) )//Actually read in the value of the bearingRegister into the readBuffer
-		return readBuffer[1];//return command buffer
+		return readBuffer[1];
 	else
 		return -1;//if in the case that the read fails, simply return -1
 

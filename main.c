@@ -35,10 +35,10 @@ int main(void)
 {
 
 	// Set up the serial port communications channel
-    xSerialPort = xSerialPortInitMinimal(USART0, 115200, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
-    
-    // Display a polite welcome message - we are Canadians after all
-    avrSerialPrint_P(PSTR("\r\n Successfully running Doomsday Project \r\n"));
+	xSerialPort = xSerialPortInitMinimal(USART0, 115200, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
+
+	// Display a polite welcome message - we are Canadians after all
+	avrSerialPrint_P(PSTR("\r\n Successfully running Doomsday Project \r\n"));
 
 	// Create the queue from the sensor to the LED and the sensor to the LCD
 	struct structMsg tmp;
@@ -104,9 +104,21 @@ static void taskLEDControl(void *pvParameters)
 static void taskThermalSensor(void *pvParameters)
 {
     (void)pvParameters;
-    
-    uint8_t test = getAmbientTemperature();
-    avrSerialPrintf_P(PSTR("\r\nAmbient Temperature: %u \r\n "), test);
+
+    //Initialize the thermal sensor, this will also enable interrupts
+    initThermalSensor();
+
+    //create some global array which will be of size 9 and hold the ambient temperatures and the temperatures the pixel 1 through 9 hold
+    uint8_t someGlobalTempArray [9];
+
+    //actual call, notice the passing of the array
+    ts_get_temps((uint8_t *)&someGlobalTempArray);
+
+    //array will now be filled with temperatures.
+    for (int i = 0 ; i < NUM_TEMPS; i++){
+        avrSerialPrintf_P(PSTR("\r\nTemp: %u \r\n "), *(someGlobalTempArray + i));
+    }
+
 
 }
 
