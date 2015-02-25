@@ -42,7 +42,7 @@ void TaskLCD(uint8_t* array)
 		}
 
 		// Display temperatures on the LCD
-		print(message, true);
+		printLCD(message, true);
 	}
 }
 
