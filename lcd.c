@@ -5,7 +5,7 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "serial.h"
-#include "global.h"
+#include "thermal.h"
 
 // Port Handles for Serial and LCD
 extern xComPortHandle xSerialPort;
