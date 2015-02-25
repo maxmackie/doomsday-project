@@ -8,7 +8,7 @@
 #define INCLUDE_WIFI_H_
 
 // Prototypes
-void initLEDs(int blue, int red, int green);
+void initLEDsOutput();
 void toggleRed(int state);
 void toggleBlue(int state);
 void toggleGreen(int state);

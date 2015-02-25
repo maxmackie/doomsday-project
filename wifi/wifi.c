@@ -7,18 +7,20 @@
 #include "wifi.h";
 
 /*-----------------------------------------------------------------*
- * Function: initLED                                               *
+ * Function: initLEDsOutput                                        *
  * Returns:  none                                                  *
- * Desc:	 Sets the DDR for the LEDs to output                   *	
+ * Desc:	 Sets the DDR for the LEDs to output                     *
  *-----------------------------------------------------------------*/
-void initLEDs(int blue, int red, int green) {
-	
+void initLEDsOutput() {
+	DDRH |= _BV(DDH3); // red
+	DDRE |= _BV(DDE5); // blue
+	DDRE |= _BV(DDE3); // green
 }
 
 /*-----------------------------------------------------------------*
  * Function: toggleRed                                             *
  * Returns:  none                                                  *
- * Desc:	 Sets the red LED to ON (1) or OFF (0)                 *		
+ * Desc:	 Sets the red LED to ON (1) or OFF (0)                   *
  *-----------------------------------------------------------------*/
 void toggleRed(int state) {
 	if (state == 0) {
@@ -31,7 +33,7 @@ void toggleRed(int state) {
 /*-----------------------------------------------------------------*
  * Function: toggleBlue                                            *
  * Returns:  none                                                  *
- * Desc:	 Sets the blue LED to ON (1) or OFF (0)                *
+ * Desc:	 Sets the blue LED to ON (1) or OFF (0)                  *
  *-----------------------------------------------------------------*/
 void toggleBlue(int state) {
 	if (state == 0) {
@@ -44,7 +46,7 @@ void toggleBlue(int state) {
 /*-----------------------------------------------------------------*
  * Function: toggleGreen                                           *
  * Returns:  none                                                  *
- * Desc:	 Sets the green LED to ON (1) or OFF (0)               *		
+ * Desc:	 Sets the green LED to ON (1) or OFF (0)                 *
  *-----------------------------------------------------------------*/
 void toggleGreen(int state) {
 	if (state == 0) {
@@ -57,12 +59,12 @@ void toggleGreen(int state) {
 /*-----------------------------------------------------------------*
  * Function: taskTemperatureLED                                    *
  * Returns:  none                                                  *
- * Desc:	 Takes a pointer to an array of 8 uint8_t values       *
- *			 representing the 8 pixel temperature values. These    *
- *			 values are averaged and the LED colour is changed.	   *		
+ * Desc:	 Takes a pointer to an array of 8 uint8_t values         *
+ *			 representing the 8 pixel temperature values. These        *
+ *			 values are averaged and the LED colour is changed.	       *
  *-----------------------------------------------------------------*/
 void taskTemperatureLED(uint8_t *pixelTemps) {
-	while (1) {	
+	while (1) {
 		// calculate the average of the pixel temperatures
 		uint8_t total = 0;
 		for (int i = 0; i < 8; i++) { total += pixelTemps[i]; }
