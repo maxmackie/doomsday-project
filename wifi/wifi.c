@@ -70,19 +70,19 @@ void taskTemperatureLED(uint8_t *pixelTemps) {
 
 		if (avg < 20.00) {
 			// turn on blue and turn off others
-			PORTE |= _BV(PORTE3);
-			PORTE &= ~_BV(PORTE5);
-			PORTH |= _BV(PORTH3);
+			toggleRed(0);
+			toggleBlue(1);
+			toggleGreen(0);
 		} else if (avg < 30.00) {
 			// turn on green and turn off others
-			PORTE &= ~_BV(PORTE3);
-			PORTE |= _BV(PORTE5);
-			PORTH |= _BV(PORTH3);
+			toggleRed(0);
+			toggleBlue(0);
+			toggleGreen(1);
 		} else {
 			// turn on red and turn off others
-			PORTE |= _BV(PORTE3);
-			PORTE |= _BV(PORTE5);
-			PORTH &= ~_BV(PORTH3);
+			toggleRed(1);
+			toggleBlue(0);
+			toggleGreen(0);
 		}
 	}
 }
