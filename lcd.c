@@ -5,10 +5,15 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "serial.h"
+#include "global.h"
 
 // Port Handles for Serial and LCD
 extern xComPortHandle xSerialPort;
 extern xComPortHandle xSerial1Port;
+
+extern uint8_t* tempArray;
+
+void printLCD(char* message, bool interrupt);
 
 void initLCD()
 {
