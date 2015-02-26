@@ -6,6 +6,8 @@
 
 #include "wifi.h";
 
+extern uint8_t globalTempArray[9];
+
 /*-----------------------------------------------------------------*
  * Function: initLEDsOutput                                        *
  * Returns:  none                                                  *
@@ -63,11 +65,11 @@ void toggleGreen(int state) {
  *			 representing the 8 pixel temperature values. These        *
  *			 values are averaged and the LED colour is changed.	       *
  *-----------------------------------------------------------------*/
-void taskTemperatureLED(uint8_t *pixelTemps) {
+void taskTemperatureLED() {
 	while (1) {
 		// calculate the average of the pixel temperatures
 		uint8_t total = 0;
-		for (int i = 0; i < 8; i++) { total += pixelTemps[i]; }
+		for (int i = 0; i < 8; i++) { total += globalTempArray[i]; }
 		float avg = total / 8;
 
 		if (avg < 20.00) {

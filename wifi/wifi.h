@@ -8,10 +8,10 @@
 #define INCLUDE_WIFI_H_
 
 // Prototypes
-void initLEDsOutput();
+void initLEDsOutput(void);
 void toggleRed(int state);
 void toggleBlue(int state);
 void toggleGreen(int state);
-void taskTemperatureLED(uint8_t *pixelTemps);
+void taskTemperatureLED(void);
 
 #endif /* INCLUDE_WIFI_H_ */
