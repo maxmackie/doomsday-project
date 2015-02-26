@@ -18,7 +18,6 @@ void printLCD(char* message, bool interrupt);
 void initLCD()
 {
 	// Initialize the USART Port Handles for Serial and LCD
-	xSerialPort = xSerialPortInitMinimal(USART0, 115200, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
 	xSerial1Port = xSerialPortInitMinimal(USART1, 9600, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
 }
 
