@@ -29,6 +29,8 @@ void initLCD()
  */
 void TaskLCD(uint8_t* array)
 {
+	xSerialxPrint_P(xSerialPort, PSTR("LCD Task Started"));
+	
 	// Task Loop
 	while (1)
 	{
