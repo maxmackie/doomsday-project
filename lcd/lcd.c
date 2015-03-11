@@ -5,82 +5,50 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "serial.h"
-#include "thermal.h"
 
 // Port Handles for Serial and LCD
 extern xComPortHandle xSerialPort;
 extern xComPortHandle xSerial1Port;
 
-extern uint8_t* tempArray;
-
-void printLCD(char* message, bool interrupt);
+extern uint8_t globalTempArray[9];
 
 void initLCD()
 {
 	// Initialize the USART Port Handles for Serial and LCD
 	xSerial1Port = xSerialPortInitMinimal(USART1, 9600, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
+
+	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
+	xSerialxPrintf(&xSerial1Port, "%c", 0x38);
+
+	xSerialxPrintf(&xSerialPort, "\n%s\n", "LCD Task Initialized");
 }
 
 /*
  * Task to print the temperatures to the LCD
- *
- * @param array - Pointer to temperature array
  */
-void TaskLCD(uint8_t* array)
+void TaskLCD()
 {
-	xSerialxPrint_P(xSerialPort, PSTR("LCD Task Started"));
-	
-	// Task Loop
-	while (1)
+	// Display temperatures on the LCD
+	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
+	xSerialxPrintf(&xSerial1Port, "%c", 0x01);
+	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
+	xSerialxPrintf(&xSerial1Port, "%c", 0x80);
+
+	//for (int i = 1; i < sizeof(globalTempArray); i++)
+	for (int i = 1; i <= 4; i++)
 	{
-		// Message to be displayed
-		char* message = "";
-
-		for (int i = 0; i < sizeof(array); i++)
-		{
-			// Get the temperature as a string
-			char* num = "";
-			itoa(array[i], num, 10);
-
-			// Append to the message
-			strcat(message, num);
-			strcat(message, " ");
-		}
-
-		// Display temperatures on the LCD
-		printLCD(message, true);
-	}
-}
-
-/*
- * Prints the message to the LCD
- *
- * @param message - The message to print
- * @param interrupt - Indicates whether or not the function will use an interrupt
- */
-void printLCD(char* message, bool interrupt)
-{
-	// We can only display 32 characters
-	if (strlen(message) >  32)
-	{
-		// If there are more than 32 characters, only display the first 32
-		strncpy(message, message, 32);
-		message[32] = '\0';
+		// Print the temp to the LCD
+		xSerialxPrintf(&xSerial1Port, "%2d ", globalTempArray[i]);
 	}
 
-	// Calculate the remaining space to fill on the LCD
-	int whiteSpace = 32 - strlen(message);
+	// Display temperatures on the LCD
+	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
+	xSerialxPrintf(&xSerial1Port, "%c", 0xC0);
 
-	// Create pointer to the Serial Print function with or without interrupt
-	void (*serialPrint)(xComPortHandlePtr, const char*, ...);
-	serialPrint = interrupt ? &xSerialxPrintf : &avrSerialxPrintf;
-
-	// Print the message to the LCD
-	(*serialPrint)(&xSerial1Port, "%s", message);
-
-	// Print white space to set the cursor back to the beginning
-	for (int i = 0; i < whiteSpace; i++)
+	//for (int i = 1; i < sizeof(globalTempArray); i++)
+	for (int i = 5; i <= 8; i++)
 	{
-		(*serialPrint)(&xSerial1Port, " ");
+		// Print the temp to the LCD
+		xSerialxPrintf(&xSerial1Port, "%2d ", globalTempArray[i]);
 	}
 }
