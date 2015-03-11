@@ -16,6 +16,7 @@ void initLCD()
 	// Initialize the USART Port Handles for Serial and LCD
 	xSerial1Port = xSerialPortInitMinimal(USART1, 9600, portSERIAL_BUFFER_TX, portSERIAL_BUFFER_RX);
 
+	// Set the LCD to 2 rows
 	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
 	xSerialxPrintf(&xSerial1Port, "%c", 0x38);
 
@@ -27,24 +28,24 @@ void initLCD()
  */
 void TaskLCD()
 {
-	// Display temperatures on the LCD
+	// Clear LCD and set cursor to first position
 	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
 	xSerialxPrintf(&xSerial1Port, "%c", 0x01);
 	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
 	xSerialxPrintf(&xSerial1Port, "%c", 0x80);
 
-	//for (int i = 1; i < sizeof(globalTempArray); i++)
+	// First 4 temperatures
 	for (int i = 1; i <= 4; i++)
 	{
 		// Print the temp to the LCD
 		xSerialxPrintf(&xSerial1Port, "%2d ", globalTempArray[i]);
 	}
 
-	// Display temperatures on the LCD
+	// Move cursor to second row
 	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
 	xSerialxPrintf(&xSerial1Port, "%c", 0xC0);
 
-	//for (int i = 1; i < sizeof(globalTempArray); i++)
+	// Last 4 temperatures
 	for (int i = 5; i <= 8; i++)
 	{
 		// Print the temp to the LCD
