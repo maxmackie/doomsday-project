@@ -34,20 +34,16 @@ void TaskLCD()
 	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
 	xSerialxPrintf(&xSerial1Port, "%c", 0x80);
 
-	// First 4 temperatures
-	for (int i = 1; i <= 4; i++)
+	// Prints all the temperatures
+	for (int i = 1; i < sizeof(globalTempArray); i++)
 	{
-		// Print the temp to the LCD
-		xSerialxPrintf(&xSerial1Port, "%2d ", globalTempArray[i]);
-	}
+		if (i == 5)
+		{
+			// Move cursor to second row
+			xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
+			xSerialxPrintf(&xSerial1Port, "%c", 0xC0);
+		}
 
-	// Move cursor to second row
-	xSerialxPrintf(&xSerial1Port, "%c", 0xFE);
-	xSerialxPrintf(&xSerial1Port, "%c", 0xC0);
-
-	// Last 4 temperatures
-	for (int i = 5; i <= 8; i++)
-	{
 		// Print the temp to the LCD
 		xSerialxPrintf(&xSerial1Port, "%2d ", globalTempArray[i]);
 	}
