@@ -7,6 +7,8 @@
 #include <I2CMultimaster.h>
 #include "sensor.h"
 
+extern uint8_t globalTempArray[9];
+
 uint8_t getDataFromRegister (uint8_t);
 
 /*-----------------------
@@ -20,13 +22,22 @@ void initThermalSensor(void){
 
 /*-----------------------
 * Function: ts_get_temps
-* Return value: none, but the tempArray is allocated with an array filled with the temperatures, array is of size 9
+* Return value: none, but the globalTempArray is allocated with temperatures, array is of size 9
 * Description: Will get the temperature readings from the TPA81 and assign each element in the tempArray with the correct values
 *----------------------*/
-void ts_get_temps(uint8_t *tempArray){
+void taskReadTemperatures(){
 	for (int i = 0 ; i < NUM_TEMPS; i++){
-		tempArray[i] = getDataFromRegister(AMBIENT + i);
+		globalTempArray[i] = getDataFromRegister(AMBIENT + i);
 	};
+}
+
+/*---------------------
+ * Function: taskPerformThermalScan
+ * Return value: none,
+ * Description: Will perform continous thermal scanning by rotating the TPA81 Servo by turning left to right and back. Uses our move.h module
+ *--------------------*/
+void taskPerformThermalScan(){
+	return;
 }
 
 /*-----------------------
@@ -43,7 +54,6 @@ void ts_get_temps(uint8_t *tempArray){
 * 7. Send a stop sequence.
 *
 *----------------------*/
-
 uint8_t getDataFromRegister(uint8_t bearingRegister){
 
 	uint8_t commandBuffer [2]; //Create a command buffer that will send a WRITE command addressing the appropriate REGISTER

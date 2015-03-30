@@ -29,7 +29,8 @@
 
 // Prototypes
 void initThermalSensor(void);
-void ts_get_temps(uint8_t *tempArray);
+void taskReadTemperatures(void);
+void taskPerformThermalScan(void);
 
 #endif /* INCLUDE_THERMALSENSOR_H_ */
 
