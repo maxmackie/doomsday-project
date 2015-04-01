@@ -86,24 +86,27 @@ void taskAveragesLCD(void *pvParameters)
 {
 	Data *data = (Data *)pvParameters;
 
-	// Calculate the average of the 8 pixel temperatures
-	uint8_t averageTemperature = 0;
-	for (int i = 1; i < 9; i++)
-	{
-		averageTemperature += data->temperatures[i];
-	}
-	averageTemperature /= 8;
-
-	// Average temp will be displayed on the top row
+	// Speed and Distance will be displayed on the top row
 	char* topMsg = "";
-	sprintf(topMsg, "Temp: %2d", averageTemperature);
+	sprintf(topMsg, "Speed:%2f Dist:%2f", data->move.speed, data->move.distance);
 
-	// TODO: Calculate the average speed
-	double averageSpeed = data->move.speed;
+	// Calculate the average of the first 4 pixel temperatures
+	uint8_t averageFirst4 = 0;
+	for (int i = 1; i <= 4; i++)
+	{
+		averageFirst4 += data->temperatures[i];
+	}
 
-	// Average speed will be displayed on the bottom row
+	// Calculate the average of the last 4 pixel temperatures
+	uint8_t averageLast4 = 0;
+	for (int i = 5; i <= 8; i++)
+	{
+		averageLast4 += data->temperatures[i];
+	}
+
+	// Ambient and average temperatures will be displayed on the bottom row
 	char* bottomMsg = "";
-	sprintf(bottomMsg, "Speed: %2f", averageSpeed);
+	sprintf(bottomMsg, "A:%2d F4:%2d L4:%2d", data->temperatures[0], averageFirst4, averageLast4);
 
 	// Display the averages on the LCD
 	print(topMsg, bottomMsg);
