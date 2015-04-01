@@ -6,10 +6,16 @@
 
 #include <I2CMultimaster.h>
 #include "sensor.h"
+#include "servos.h"
+#include "data.h"
 
 extern uint8_t globalTempArray[9];
 
+TaskHandle_t scanHandler;
+
 uint8_t getDataFromRegister (uint8_t);
+void forkThermalScan (void);
+void performScan(void);
 
 /*-----------------------
 * Function: initThermalSensor
@@ -25,20 +31,29 @@ void initThermalSensor(void){
 * Return value: none, but the globalTempArray is allocated with temperatures, array is of size 9
 * Description: Will get the temperature readings from the TPA81 and assign each element in the tempArray with the correct values
 *----------------------*/
-void taskReadTemperatures(){
+void taskReadTemperatures(void *pvParameters){
+	forkThermalScan();
+	struct Data *data = (struct Data *)pvParameters;
 	for (int i = 0 ; i < NUM_TEMPS; i++){
-		globalTempArray[i] = getDataFromRegister(AMBIENT + i);
+		data->temperatures[i] = getDataFromRegister(AMBIENT + i);
 	};
 }
 
 /*---------------------
- * Function: taskPerformThermalScan
+ * Function: forkThermalScan
  * Return value: none,
- * Description: Will perform continous thermal scanning by rotating the TPA81 Servo by turning left to right and back. Uses our move.h module
+ * Description: Will perform continous thermal scanning by rotating the TPA81 Servo by turning left to right and back. Uses our servos.h module, runs as a forked process
  *--------------------*/
-void taskPerformThermalScan(){
-	return;
+void forkThermalScan(void){
+	xTaskCreate(performScan, "Fork of Thermal Scan", 256, NULL, 3, &scanHandler);
 }
+
+
+void performScan (void){
+	scan();
+	vTaskDelete(scanHandler);
+}
+
 
 /*-----------------------
 * Function: getDataFromRegister

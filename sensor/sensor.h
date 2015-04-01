@@ -30,7 +30,6 @@
 // Prototypes
 void initThermalSensor(void);
 void taskReadTemperatures(void);
-void taskPerformThermalScan(void);
 
 #endif /* INCLUDE_THERMALSENSOR_H_ */
 
