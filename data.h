@@ -14,7 +14,8 @@ typedef enum
 	STOP,
 	FORWARD,
 	BACKWARD,
-	SPIN
+	SPIN_CW,
+	SPIN_CCW
 } Type;
 
 /*----------------------------------------------------------------------------
