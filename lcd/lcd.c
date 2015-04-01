@@ -1,3 +1,7 @@
+/*----------------------------------------------------------------------------
+ * lcd.c
+ *----------------------------------------------------------------------------*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -5,7 +9,8 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "serial.h"
-#include "main.h"
+
+#include "data.h"
 
 // Port Handles for Serial and LCD
 extern xComPortHandle xSerialPort;
@@ -42,7 +47,7 @@ void initLCD()
 	transmit(CLEAR);
 
 	// The task is now initialized
-	xSerialxPrint_P(&xSerialPort, PSTR("\nLCD Task Initialized\n"));
+	xSerialxPrint_P(&xSerialPort, PSTR("\nLCD Module Initialized\n"));
 }
 
 /*----------------------------------------------------------------------------
@@ -85,7 +90,7 @@ void taskAveragesLCD(void *pvParameters)
 	uint8_t averageTemperature = 0;
 	for (int i = 1; i < 9; i++)
 	{
-		averageTemperature += data->temperatureArray[i];
+		averageTemperature += data->temperatures[i];
 	}
 	averageTemperature /= 8;
 
@@ -94,11 +99,11 @@ void taskAveragesLCD(void *pvParameters)
 	sprintf(topMsg, "Temp: %2d", averageTemperature);
 
 	// TODO: Calculate the average speed
-	uint8_t averageSpeed = 0;
+	double averageSpeed = data->move.speed;
 
 	// Average speed will be displayed on the bottom row
 	char* bottomMsg = "";
-	sprintf(bottomMsg, "Speed: %2d", averageSpeed);
+	sprintf(bottomMsg, "Speed: %2f", averageSpeed);
 
 	// Display the averages on the LCD
 	print(topMsg, bottomMsg);
