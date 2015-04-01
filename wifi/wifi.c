@@ -5,8 +5,7 @@
  *---------------------------------------------*/
 
 #include "wifi.h";
-
-extern uint8_t globalTempArray[9];
+#include "data.h";
 
 /*-----------------------------------------------------------------*
  * Function: initLEDs                                              *
@@ -23,13 +22,21 @@ void initLED() {
  * Function: toggleRed                                             *
  * Returns:  none                                                  *
  * Desc:   Sets the red LED to ON (1) or OFF (0)                   *
+ *         If any other state variable is given, simply toggle     *
+ *         the state of the LED.
  *-----------------------------------------------------------------*/
 void toggleRed(int state) {
   if (state == 0) {
     PORTH |= _BV(PORTH3);
-  } else {
+  } else if (state == 1) {
     PORTH &= ~_BV(PORTH3);
-  }
+  } else {
+		if (_BV(PORTH3) == 1) {
+			PORTH |= _BV(PORTH3); // turn off
+		} else {
+			PORTH &= ~_BV(PORTH3); // turn on
+		}
+	}
 }
 
 /*-----------------------------------------------------------------*
@@ -59,43 +66,38 @@ void toggleGreen(int state) {
 }
 
 /*-----------------------------------------------------------------*
- * Function: taskTemperatureLED                                    *
- * Returns:  none                                                  *
- * Desc: Takes a pointer to an array of 8 uint8_t values           *
- *       representing the 8 pixel temperature values. These        *
- *       values are averaged and the LED colour is changed.        *
- *-----------------------------------------------------------------*/
-void taskTemperatureLED(uint8_t temperatureArray[9]) {
-  while (1) {
-    // calculate the average of the pixel temperatures
-    uint8_t total = 0;
-    for (int i = 0; i < 8; i++) { total += temperatureArray[i]; }
-    float avg = total / 8;
-
-    if (avg < 20 && avg > 10) {
-      // turn on blue and turn off others
-      toggleRed(0);
-      toggleBlue(1);
-      toggleGreen(0);
-    } else if (avg > 30 || avg < 10) {
-      // turn on green and turn off others
-      toggleRed(1);
-      toggleBlue(0);
-      toggleGreen(0);
-    } else {
-      // turn on red and turn off others
-      toggleRed(0);
-      toggleBlue(0);
-      toggleGreen(1);
-    }
-  }
-}
-
-/*-----------------------------------------------------------------*
  * Function: taskMovementLED                                       *
  * Returns:  none                                                  *
  * Desc: Updates the LED based on how the robot is moving          *
  *-----------------------------------------------------------------*/
-void taskMovementLED(uint8_t movementArray[9]) {
+void taskMovementLED(void *pvParameters) {
+
+	Move *data = (Move*) pvParameters;
+	Type type = data->type;
+
+	switch (type) {
+		case FORWARD:
+			toggleRed(0);
+			toggleBlue(0);
+			toggleGreen(1);
+			break;
+		case BACKWARD:
+			toggleRed(2); // toggle the state
+			toggleBlue(0);
+			toggleGreen(0);
+			break;
+		case SPIN_CW:
+		case SPIN_CCW:
+			toggleRed(0);
+			toggleBlue(1);
+			toggleGreen(0);
+			break;
+		case STOP:
+			toggleRed(0);
+			toggleBlue(0);
+			toggleGreen(0);
+			break;
+	}
+
 	return;
 }
