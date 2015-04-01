@@ -7,13 +7,24 @@
 
 /*----------------------------------------------------------------------------
  * Description:
+ * 		Types of movements that can be achieved
+ *----------------------------------------------------------------------------*/
+typedef enum
+{
+	FORWARD,
+	BACKWARD,
+	SPIN
+} Type;
+
+/*----------------------------------------------------------------------------
+ * Description:
  * 		Move structure that contains the distance, speed and movement type
  *----------------------------------------------------------------------------*/
 typedef struct
 {
 	double distance;
 	double speed;
-	int type;
+	Type type;
 } Move;
 
 /*----------------------------------------------------------------------------
