@@ -1,8 +1,5 @@
 /*
  * move.c
- *
- *  Created on: Apr 1, 2015
- *      Author: mhami077
  */
 
 #include <stdlib.h>
