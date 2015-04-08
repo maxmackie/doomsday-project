@@ -92,17 +92,11 @@ void taskAveragesLCD(void *pvParameters)
 
 	// Calculate the average of the first 4 pixel temperatures
 	uint8_t averageFirst4 = 0;
-	for (int i = 1; i <= 4; i++)
-	{
-		averageFirst4 += data->temperatures[i];
-	}
+	for (int i = 1; i <= 4; i++) averageFirst4 += data->temperatures[i];
 
 	// Calculate the average of the last 4 pixel temperatures
 	uint8_t averageLast4 = 0;
-	for (int i = 5; i <= 8; i++)
-	{
-		averageLast4 += data->temperatures[i];
-	}
+	for (int i = 5; i <= 8; i++) averageLast4 += data->temperatures[i];
 
 	// Ambient and average temperatures will be displayed on the bottom row
 	char* bottomMsg = "";
