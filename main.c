@@ -8,13 +8,13 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "queue.h"
-#include "semphr.h"
+#include "serial.h"
 #include "lcd.h"
 #include "wifi.h"
-#include "therm.h"
-#include "serial.h"
+#include "move.h"
+#include "motion.h"
 #include "data.h"
+#include "sensor.h"
 
 // USART Serial Port Handle
 extern xComPortHandle xSerialPort;
@@ -38,9 +38,10 @@ int main()
 	initLCD();
 
 	// Create the tasks
-	xTaskCreate(ts_get_temps, (const portCHAR *)"Thermal", 256, (void *)data.temperatures, 3, NULL);
-	xTaskCreate(taskMovementLED, (const portCHAR *)"LED", 256, (void *)&data.move, 3, NULL);
-	xTaskCreate(taskAveragesLCD, (const portCHAR *)"LCD", 256, (void *)&data, 3, NULL);
+	xTaskCreate(taskReadTemperatures, (const portCHAR *)"Thermal", 256, (void *)data.temperatures, 1, NULL);
+	xTaskCreate(taskMovementLED, (const portCHAR *)"LED", 256, (void *)&data.move, 1, NULL);
+	xTaskCreate(taskAveragesLCD, (const portCHAR *)"LCD", 256, (void *)&data, 1, NULL);
+	xTaskCreate(maneuvers, (const portCHAR *)"Maneuvers", 256, (void *)&data.move, 1, NULL);
 
 	// Start the scheduler
 	vTaskStartScheduler();
