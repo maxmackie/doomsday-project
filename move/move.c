@@ -87,6 +87,7 @@ void maneuvers(void *pvParameters)
 		xTaskCreate(controller, (const portCHAR *)"Controller", 256, NULL, 1, &controllerHandle);
 		xTaskCreate(measure, (const portCHAR *)"Measure", 256, (void *)&move, 1, &measureHandle);
 
+		// TODO: Change the delay according to the time needed for the robot to perform a movement
 		vTaskDelayUntil(&xLastWakeTime, (10 / portTICK_PERIOD_MS));
 
 		vTaskDelete(&controllerHandle);
