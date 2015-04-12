@@ -1,5 +1,7 @@
 /*----------------------------------------------------------------------------
  * lcd.c
+ *
+ * @author Christopher Sluyter 6390470
  *----------------------------------------------------------------------------*/
 
 #include <stdlib.h>
@@ -24,10 +26,10 @@ extern xComPortHandle xSerial1Port;
  * ROW_2: Sets the cursor to the beginning of the bottom row
  * SET_ROWS: Tells the LCD to write on both rows
  */
-uint8_t CLEAR = 0x01;
-uint8_t ROW_1 = 0x80;
-uint8_t ROW_2 = 0xC0;
-uint8_t SET_ROWS = 0x38;
+uint8_t const CLEAR = 0x01;
+uint8_t const ROW_1 = 0x80;
+uint8_t const ROW_2 = 0xC0;
+uint8_t const SET_ROWS = 0x38;
 
 // Private methods
 static void print(char* topMsg, char* bottomMsg);
