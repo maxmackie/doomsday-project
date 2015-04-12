@@ -12,7 +12,6 @@
 #include "lcd.h"
 #include "wifi.h"
 #include "move.h"
-#include "motion.h"
 #include "data.h"
 #include "sensor.h"
 
@@ -38,6 +37,7 @@ int main()
 	initLCD();
 
 	// Create the tasks
+	// TODO: Time the tasks and set the priorities accordingly
 	xTaskCreate(taskReadTemperatures, (const portCHAR *)"Thermal", 256, (void *)data.temperatures, 1, NULL);
 	xTaskCreate(taskMovementLED, (const portCHAR *)"LED", 256, (void *)&data.move, 1, NULL);
 	xTaskCreate(taskAveragesLCD, (const portCHAR *)"LCD", 256, (void *)&data, 1, NULL);
