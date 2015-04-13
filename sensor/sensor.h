@@ -29,7 +29,9 @@
 
 // Prototypes
 void initThermalSensor(void);
-void taskReadTemperatures(void);
+void taskReadTemperatures(void *pvParameters);
+void taskPerformThermalScan(void *pvParameters);
+void taskStopThermalScan(void *pvParameters)
 
 #endif /* INCLUDE_THERMALSENSOR_H_ */
 

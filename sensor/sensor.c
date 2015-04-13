@@ -9,13 +9,13 @@
 #include "servos.h"
 #include "data.h"
 
-extern uint8_t globalTempArray[9];
 
+int scanning = 0;
 TaskHandle_t scanHandler;
 
 uint8_t getDataFromRegister (uint8_t);
-void forkThermalScan (void);
 void performScan(void);
+
 
 /*-----------------------
 * Function: initThermalSensor
@@ -32,7 +32,6 @@ void initThermalSensor(void){
 * Description: Will get the temperature readings from the TPA81 and assign each element in the tempArray with the correct values
 *----------------------*/
 void taskReadTemperatures(void *pvParameters){
-	forkThermalScan();
 	struct Data *data = (struct Data *)pvParameters;
 	for (int i = 0 ; i < NUM_TEMPS; i++){
 		data->temperatures[i] = getDataFromRegister(AMBIENT + i);
@@ -40,18 +39,39 @@ void taskReadTemperatures(void *pvParameters){
 }
 
 /*---------------------
- * Function: forkThermalScan
- * Return value: none,
+ * Function: taskPerformThermalScan
+ * Return value: none
  * Description: Will perform continous thermal scanning by rotating the TPA81 Servo by turning left to right and back. Uses our servos.h module, runs as a forked process
+ * 				will only actually perform forked process if it is not already running.
  *--------------------*/
-void forkThermalScan(void){
-	xTaskCreate(performScan, "Fork of Thermal Scan", 256, NULL, 3, &scanHandler);
+
+void taskPerformThermalScan(void *pvParameters){
+	if (scanning == 0){
+		xTaskCreate(performScan, "Fork of Thermal Scan", 256, NULL, 3, &scanHandler);
+		scanning = 1;
+	}
 }
 
-
+/*---------------------
+ * Function: performScan
+ * Return value: none
+ * Description: Will call actual scan function from servos.h, used as a callback for creating the thermal scan task
+ *--------------------*/
 void performScan (void){
 	scan();
-	vTaskDelete(scanHandler);
+}
+
+/*---------------------
+ * Function: taskStopThermalScan
+ * Return value: none
+ * Description: Will stop scan task and set the pulse width to the motor to stop rotating, using the stopScan function from servos.h
+ *--------------------*/
+void taskStopThermalScan(void *pvParameters){
+	if (scanning == 1){
+		stopScan();
+		vTaskDelete(scanHandler);
+		scanning = 0;
+	}
 }
 
 
