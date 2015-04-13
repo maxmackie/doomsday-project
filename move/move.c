@@ -44,9 +44,6 @@ Type pattern[] =
 		STOP
 };
 
-static void controller();
-static void measure(void *pvParameters);
-
 void maneuvers(void *pvParameters)
 {
 	Move *move = (Move *)pvParameters;
@@ -95,7 +92,7 @@ void maneuvers(void *pvParameters)
 	}
 }
 
-static void controller()
+void controller()
 {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 
@@ -108,7 +105,7 @@ static void controller()
 	pwmRight = pwmDefaultRight + (GAIN * errorRight);
 }
 
-static void measure(void *pvParameters)
+void measure(void *pvParameters)
 {
 	Move *move = (Move *)pvParameters;
 
