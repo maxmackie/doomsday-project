@@ -35,6 +35,7 @@ int main()
 	initThermalSensor();
 	initLED();
 	initLCD();
+	motion_init();
 
 	// Create the tasks
 	// TODO: Time the tasks and set the priorities accordingly
